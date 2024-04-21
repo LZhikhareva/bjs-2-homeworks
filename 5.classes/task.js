@@ -72,47 +72,63 @@ class Library {
         }
     }
 
-    findBookBy(type, value){  
-        return this.books.find(book => book[type] == value) || null;        
-      }
+    findBookBy(type, value) {
+        return this.books.find(book => book[type] == value) || null;
+    }
 
-    
+
     giveBookByName(bookName) {
         const book = this.findBookBy('name', bookName);
         if (book) {
-          this.books.splice(this.books.indexOf(book), 1);
+            this.books.splice(this.books.indexOf(book), 1);
         }
         return book;
-      }
+    }
 }
 
 // Задание 3
 
+
 class Student {
     constructor(name, marks) {
         this.name = name;
-        this.marks = {};
+        this.marks = new Object(marks);
     }
 
-addMarks(subject, ...score) {
-  if (this.marks.hasOwnProperty(subject)) {
-  for (let i = 0; i < score.length; i++) {
-    if (score[i] >= 2 && score[i] <= 5){
-      this.marks[subject].push(score[i]);
-    } else {
-      console.log(`Значение ${score[i]} некорректно! Оно не будет добавлено в перечень оценок по предмету ${subject}!`);
+    addMark(score, subject) {
+        if (score < 2 || score > 5) {
+            console.log(`Значение ${score} некорректно!`);
+            return;
+        } else {
+            if (this.marks.hasOwnProperty(subject)) {
+                this.marks[subject].push(score);
+            } else {
+                this.marks[subject] = new Array();
+                this.marks[subject].push(score);
+            }
+        }
+        return this.marks;
     }
-  }
-  } else {
-    this.marks[subject] = new Array();
-    for (let i = 0; i < score.length; i++) {
-    if (score[i] >= 2 && score[i] <= 5){
-      this.marks[subject].push(score[i]);
-    } else {
-      console.log(`Значение ${score[i]} некорректно! Оно не будет добавлено в перечень оценок по предмету ${subject}!`);
+
+    getAverageBySubject(subject) {
+        if (!this.marks.hasOwnProperty(subject)) {
+            return 0;
+        } else {
+            return this.marks[subject].reduce((acc, item) => acc + item) / this.marks[subject].length;
+        }
     }
-  }
-  }
-  return this.marks;
-}
+
+    getAverage() {
+        let sum = 0;
+        let subjects = Object.keys(this.marks);
+        if (subjects.length === 0 || Object.keys(this.marks) == undefined) {
+            return 0;
+        } else {
+            for (let i = 0; i < subjects.length; i++) {
+                this.getAverageBySubject(subjects[i]);
+                sum = sum + this.getAverageBySubject(subjects[i]);
+            }
+            return sum / subjects.length;
+        }
+    }
 }
